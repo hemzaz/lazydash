@@ -1,6 +1,7 @@
 # lazydash
 
-Auto generate Grafana dashboards based on prometheus metrics endpoints. Allows for quick prototyping of dashboards. 
+Auto generate Grafana dashboards based on prometheus metrics endpoints.  
+Allows for quick prototyping of dashboards. 
 
 # Notes
 
