@@ -1,7 +1,7 @@
 package util
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/rs/zerolog/log"
@@ -15,7 +15,7 @@ func LoadFromFile(path string) ([]byte, error) {
 	}
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func LoadFromStdin() []byte {
 	}
 
 	// Read from stdin
-	data, err := ioutil.ReadAll(os.Stdin)
+	data, err := io.ReadAll(os.Stdin)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Error reading from stdin")
 		return nil
