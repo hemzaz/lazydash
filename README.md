@@ -1,4 +1,4 @@
-# lazydash [![CircleCI](https://circleci.com/gh/hemzaz/lazydash/tree/master.svg?style=svg&circle-token=166cef586b42bb07d2e81ffaffaac8bd371970d2)](https://circleci.com/gh/hemzaz/lazydash/tree/master)
+# lazydash
 
 Auto generate Grafana dashboards based on prometheus metrics endpoints. Allows for quick prototyping of dashboards. 
 
