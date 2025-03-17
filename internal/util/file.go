@@ -3,8 +3,6 @@ package util
 import (
 	"io"
 	"os"
-
-	"github.com/rs/zerolog/log"
 )
 
 // LoadFromFile loads data from a file
