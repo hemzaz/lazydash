@@ -4,8 +4,8 @@ package util
 import (
 	"context"
 	"crypto/tls"
+	"io"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
@@ -62,7 +62,7 @@ func FetchURL(urlStr string, insecureSkipVerify bool) ([]byte, error) {
 		return nil, fmt.Errorf("HTTP request to %s failed with status code %d", urlStr, resp.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Error().Err(err).Str("url", urlStr).Msg("Failed to read response body")
 		return nil, fmt.Errorf("failed to read response body from %s: %w", urlStr, err)
