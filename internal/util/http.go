@@ -4,6 +4,7 @@ package util
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -19,9 +20,10 @@ func IsURL(str string) bool {
 }
 
 // FetchURL fetches a HTTP URL with a timeout and returns the body as bytes
-func FetchURL(urlStr string, insecureSkipVerify bool) []byte {
+func FetchURL(urlStr string, insecureSkipVerify bool) ([]byte, error) {
 	if !IsURL(urlStr) {
-		log.Fatal().Str("url", urlStr).Msg("URL is not valid")
+		log.Error().Str("url", urlStr).Msg("URL is not valid")
+		return nil, fmt.Errorf("invalid URL: %s", urlStr)
 	}
 
 	// Create a context with timeout
@@ -40,13 +42,15 @@ func FetchURL(urlStr string, insecureSkipVerify bool) []byte {
 	// Create request with context
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, urlStr, nil)
 	if err != nil {
-		log.Fatal().Err(err).Str("url", urlStr).Msg("Failed to create request")
+		log.Error().Err(err).Str("url", urlStr).Msg("Failed to create request")
+		return nil, fmt.Errorf("failed to create request for %s: %w", urlStr, err)
 	}
 	
 	// Execute request
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal().Err(err).Str("url", urlStr).Msg("Failed to connect to url")
+		log.Error().Err(err).Str("url", urlStr).Msg("Failed to connect to url")
+		return nil, fmt.Errorf("failed to connect to %s: %w", urlStr, err)
 	}
 	
 	// Always close body when done
@@ -54,13 +58,15 @@ func FetchURL(urlStr string, insecureSkipVerify bool) []byte {
 	
 	// Check HTTP status code
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		log.Fatal().Int("status", resp.StatusCode).Str("url", urlStr).Msg("HTTP request failed")
+		log.Error().Int("status", resp.StatusCode).Str("url", urlStr).Msg("HTTP request failed")
+		return nil, fmt.Errorf("HTTP request to %s failed with status code %d", urlStr, resp.StatusCode)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal().Err(err).Str("url", urlStr).Msg("Failed to read response body")
+		log.Error().Err(err).Str("url", urlStr).Msg("Failed to read response body")
+		return nil, fmt.Errorf("failed to read response body from %s: %w", urlStr, err)
 	}
 
-	return body
+	return body, nil
 }
